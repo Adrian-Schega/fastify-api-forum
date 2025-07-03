@@ -5,11 +5,14 @@ Aplikacja API zbudowana z użyciem Fastify z autoryzacją JWT i bazą danych MyS
 ## Funkcjonalności
 
 - 🚀 Szybkie API oparte na Fastify
-- 🔐 Autoryzacja JWT
+- 🔐 Autoryzacja JWT z middleware
+- 🛡️ System zarządzania rolami użytkowników
 - 🗄️ Integracja z bazą danych MySQL za pomocą Knex.js
 - 🔒 Hashowanie haseł z bcrypt
 - 📋 Migracje bazy danych
+- 🍪 Zarządzanie sesjami przez cookies
 - 🛠️ Środowisko development i production
+- 🌐 Obsługa CORS
 
 ## Technologie
 
@@ -18,6 +21,8 @@ Aplikacja API zbudowana z użyciem Fastify z autoryzacją JWT i bazą danych MyS
 - **MySQL** - Baza danych
 - **Knex.js** - Query builder i migracje
 - **bcrypt** - Hashowanie haseł
+- **@fastify/cors** - Obsługa CORS
+- **@fastify/cookie** - Zarządzanie cookies
 
 ## Wymagania
 
@@ -83,6 +88,9 @@ npm start
 │   │   └── auth.controller.js
 │   ├── database/              # Konfiguracja bazy danych
 │   │   └── migrations/        # Migracje
+│   ├── middlewares/           # Middleware
+│   │   ├── auth.middleware.js # Autoryzacja JWT
+│   │   └── role.middleware.js # Zarządzanie rolami
 │   ├── plugins/               # Pluginy Fastify
 │   │   ├── bcrypt.js
 │   │   ├── database.js
@@ -97,10 +105,28 @@ npm start
 
 ### Autoryzacja
 
-- `POST /api/auth/register` - Rejestracja użytkownika
-- `POST /api/auth/login` - Logowanie użytkownika
-- `POST /api/auth/logout` - Wylogowanie użytkownika
-- `POST /api/auth/me` - Pobieranie informacji o aktualnie zalogowanym użytkowniku
+- `POST /api/auth/register` - Rejestracja użytkownika (publiczna)
+- `POST /api/auth/login` - Logowanie użytkownika (publiczna)
+- `POST /api/auth/logout` - Wylogowanie użytkownika (chroniona)
+- `POST /api/auth/me` - Pobieranie informacji o aktualnie zalogowanym użytkowniku (chroniona)
+
+### Middleware
+
+#### Autoryzacja
+- **`authMiddleware`** - Sprawdza token JWT w ciasteczku `auth_token`
+- **`requireRole(role)`** - Wymaga konkretnej roli użytkownika
+
+#### Przykład użycia middleware:
+```javascript
+import { authMiddleware } from '../middlewares/auth.middleware.js';
+import { requireRole } from '../middlewares/role.middleware.js';
+
+// Chroniona trasa tylko dla adminów
+fastify.get('/admin-panel', { 
+  preHandler: [authMiddleware, requireRole('admin')] 
+}, handler);
+
+```
 
 ## Baza danych
 
