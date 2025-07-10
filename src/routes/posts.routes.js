@@ -1,4 +1,4 @@
-import { requireRole } from "../middlewares/role.middleware";
+import { requireRole } from "../middlewares/role.middleware.js";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
 import { PostsController } from "../controllers/posts.controller.js";
 
@@ -12,3 +12,5 @@ async function routes(fastify, options) {
     fastify.put('/posts/:id', { preHandler: [authMiddleware, requireRole('user')] }, PostsController.updatePost);
     fastify.delete('/posts/:id', { preHandler: [authMiddleware, requireRole('admin')] }, PostsController.deletePost);
 }
+
+export default routes;

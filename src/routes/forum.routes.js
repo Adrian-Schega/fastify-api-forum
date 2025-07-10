@@ -10,7 +10,7 @@ async function routes(fastify, options) {
 
     // Protected routes (require authentication)
     fastify.post('/forums', { preHandler: [authMiddleware, requireRole('admin')] }, ForumsController.createForum);
-    fastify.put('/forums/:id', { preHandler: [authMiddleware, requireRole('admin')] }, ForumCsontroller.updateForum);
+    fastify.put('/forums/:id', { preHandler: [authMiddleware, requireRole('admin')] }, ForumsController.updateForum);
     fastify.delete('/forums/:id', { preHandler: [authMiddleware, requireRole('admin')] }, ForumsController.deleteForum);
     
     fastify.get('/forums/:id/posts', ForumsController.getPostsByForumId);

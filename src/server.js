@@ -7,6 +7,9 @@ import jwt from './plugins/jwt.js'
 import bcrypt from './plugins/bcrypt.js'
 
 import AuthRoutes from './routes/auth.routes.js'
+import CategoriesRoutes from './routes/categories.routes.js'
+import ForumRoutes from './routes/forum.routes.js'
+import PostRoutes from './routes/posts.routes.js'
 
 const fastify = Fastify({
   logger: process.env.NODE_ENV !== 'production' // Enable logging in development mode
@@ -28,6 +31,9 @@ fastify.register(jwt);
 
 // Auth routes // rejestracja routów autoryzacji
 fastify.register(AuthRoutes, { prefix: '/api/auth' })
+fastify.register(CategoriesRoutes, { prefix: '/api/categories' })
+fastify.register(ForumRoutes, { prefix: '/api/forums' })
+fastify.register(PostRoutes, { prefix: '/api/posts' })
 
 // Run the server!
 fastify.listen({ port: 3000 }, function (err, address) {

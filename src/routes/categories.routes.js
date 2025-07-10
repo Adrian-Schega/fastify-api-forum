@@ -1,4 +1,4 @@
-import { authMiddleware } from '../middlewares/auth.middleware';
+import { authMiddleware } from '../middlewares/auth.middleware.js';
 import { requireRole } from '../middlewares/role.middleware.js';
 import { CategoriesController } from '../controllers/categories.controller.js';
 
