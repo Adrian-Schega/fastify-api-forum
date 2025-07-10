@@ -43,12 +43,16 @@ export class PostsController {
         const { id } = request.params;
         const { title, content } = request.body;
         try {
+            const owner = await request.db('posts').where({ id }).select('created_by').first();
+            if ((owner !== request.user.id) || request.user.role !== 'admin') {
+                return reply.status(403).send({ success: false, message: "Nie jesteś autorem posta", data: null });
+            }
             const [updatedPost] = await request.db('posts').where({ id }).update({
                 title,
                 content
             }).returning('*');
             if (!updatedPost) {
-                return reply.status(404).send({ success: false, message: "Post nie znaleziono", data: null });
+                return reply.status(404).send({ success: false, message: "Nie znaleziono posta", data: null });
             }
             return reply.send(updatedPost);
         } catch (error) {
@@ -60,9 +64,13 @@ export class PostsController {
         // Logic to delete a post
         const { id } = request.params;
         try {
+            const owner = await request.db('posts').where({ id }).select('created_by').first();
+            if (owner !== request.user.id || request.user.role !== 'admin') {
+                return reply.status(404).send({ success: false, message: "Nie jesteś autorem posta", data: null });
+            }
             const deletedCount = await request.db('posts').where({ id }).del();
             if (deletedCount === 0) {
-                return reply.status(404).send({ success: false, message: "Post nie znaleziono", data: null });
+                return reply.status(404).send({ success: false, message: "Nie znaleziono posta", data: null });
             }
             return reply.status(204).send();
         } catch (error) {

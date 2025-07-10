@@ -8,9 +8,9 @@ async function routes(fastify, options) {
     fastify.get('/posts/:id', PostsController.getPostById);
 
     // Protected routes (require authentication)
-    fastify.post('/posts', { preHandler: [authMiddleware, requireRole('user')] }, PostsController.createPost);
-    fastify.put('/posts/:id', { preHandler: [authMiddleware, requireRole('user')] }, PostsController.updatePost);
-    fastify.delete('/posts/:id', { preHandler: [authMiddleware, requireRole('admin')] }, PostsController.deletePost);
+    fastify.post('/posts', { preHandler: authMiddleware }, PostsController.createPost);
+    fastify.put('/posts/:id', { preHandler: authMiddleware }, PostsController.updatePost);
+    fastify.delete('/posts/:id', { preHandler: authMiddleware }, PostsController.deletePost);
 }
 
 export default routes;
